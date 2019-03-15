@@ -1,0 +1,16 @@
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: install reboot-job.sh
+      copy:
+        src: ../jobs/reboot-job.sh
+        dest: /usr/local/bin/autotasks/reboot-job.sh
+        mode: 0755
+
+    - name: reboot cron
+      cron:
+        name: "a job for reboot"
+        special_time: reboot
+        job: "/usr/local/bin/autotasks/reboot-job.sh >> /var/log/cronjobs.log 2>&1"
+
