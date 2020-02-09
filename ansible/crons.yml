@@ -2,15 +2,32 @@
   connection: local
   gather_facts: no
   tasks:
-    - name: install reboot-job.sh
-      copy:
-        src: ../jobs/reboot-job.sh
-        dest: /usr/local/bin/autotasks/reboot-job.sh
-        mode: 0755
+    - name: Create job installation directory
+      file:
+        path: "/usr/local/bin/autotasks"
+        state: directory
+        mode: 0751
 
-    - name: reboot cron
+    - name: Install jobs
+      copy:
+        src: "../jobs/{{ item }}.sh"
+        dest: "/usr/local/bin/autotasks/{{ item }}.sh"
+        mode: 0755
+      loop:
+        - screenshot-rotator
+        - reboot-job
+
+    - name: Creates an entry for a reboot job
       cron:
-        name: "a job for reboot"
+        name: "test reboot job"
         special_time: reboot
         job: "/usr/local/bin/autotasks/reboot-job.sh >> /var/log/cronjobs.log 2>&1"
+   
+    - name: Creates an entry for rotating screenshots
+      cron:
+        name: "rotate screenshots on a monthly basis"
+        minute: "1"
+        hour: "11"
+        day: "1"
+        job: "/Users/banthaherder/bin/cronscripts/screenshots.sh >> /var/log/cronjobs.log 2>&1"
 
