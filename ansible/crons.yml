@@ -2,7 +2,7 @@
   connection: local
   gather_facts: no
   tasks:
-    - name: Create user logging directoy
+    - name: Create user logging directory
       file:
         path: "$HOME/.logs"
         state: directory
