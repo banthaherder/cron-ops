@@ -2,6 +2,12 @@
   connection: local
   gather_facts: no
   tasks:
+    - name: Create user logging directoy
+      file:
+        path: "$HOME/.logs"
+        state: directory
+        mode: 0751
+
     - name: Create job installation directory
       file:
         path: "/usr/local/bin/autotasks"
@@ -21,7 +27,7 @@
       cron:
         name: "test reboot job"
         special_time: reboot
-        job: "/usr/local/bin/autotasks/reboot-job.sh >> /var/log/cronjobs.log 2>&1"
+        job: "/usr/local/bin/autotasks/reboot-job.sh >> $HOME/.logs/cronjobs.log 2>&1"
    
     - name: Creates an entry for rotating screenshots
       cron:
@@ -29,5 +35,5 @@
         minute: "1"
         hour: "11"
         day: "1"
-        job: "/Users/banthaherder/bin/cronscripts/screenshots.sh >> /var/log/cronjobs.log 2>&1"
+        job: "/usr/local/bin/autotasks/screenshot-rotator.sh >> $HOME/.logs/cronjobs.log 2>&1"
 
